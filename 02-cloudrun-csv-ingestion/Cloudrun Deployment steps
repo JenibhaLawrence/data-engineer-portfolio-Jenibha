@@ -1,0 +1,24 @@
+##Enable required API
+
+gcloud services enable run.googleapis.com
+gcloud services enable artifactregistry.googleapis.com
+gcloud services enable storage.googleapis.com
+gcloud services enable bigquery.googleapis.com
+
+
+##Build Container 
+
+gcloud builds submit --tag us-central1-docker.pkg.dev/PROJECT_ID/cloudrun-repo/csv-api
+
+
+##Deploy to cloudrun 
+
+gcloud run deploy csv-api \
+  --image us-central1-docker.pkg.dev/PROJECT_ID/cloudrun-repo/csv-api \
+  --platform managed \
+  --region us-central1 \
+  --allow-unauthenticated \
+  --set-env-vars BUCKET_NAME=your_bucket \
+  --set-env-vars PROJECT_ID=your_project \
+  --set-env-vars DATASET=your_dataset \
+  --set-env-vars TABLE=your_table
