@@ -1,0 +1,20 @@
+from elasticsearch import Elasticsearch
+import pandas as pd
+
+es = Elasticsearch(["http://localhost:9200"])
+
+query = {
+    "query": {
+        "match_all": {}
+    }
+}
+
+results = es.search(index="logs", body=query, size=5000)
+
+data = [hit["_source"] for hit in results["hits"]["hits"]]
+df = pd.DataFrame(data)
+
+summary = df.groupby("error_type").size().reset_index(name="count")
+summary.to_csv("elk_error_summary.csv", index=False)
+
+print("Summary generated.")
